@@ -45,13 +45,13 @@ class input_screen(tk.Tk):
         self.title("LockBox")
         self.columnconfigure(0, weight = 1)
         self.rowconfigure(0, weight = 1)
-        self.configure(bg="black")
+        self.configure(bg="#272822")
 
         input_field = file_input_frame(self)
         input_field.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
 
 
-class file_input_frame(ttk.Frame):
+class file_input_frame(tk.Frame):
     def __init__(self, parent) -> None:
         super().__init__(parent)
 
@@ -62,7 +62,6 @@ class file_input_frame(ttk.Frame):
         self.rowconfigure(1,weight=1)
         style = ttk.Style()
         style.configure("Black.TFrame", background="#272822", foreground="#546c8f")
-        self.configure(style="Black.TFrame")
         
         self.import_button = tk.Button(self, text="Import File", command=self.import_file,
                                      bg="#34352F", fg="#D2D6BE")

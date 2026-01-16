@@ -31,7 +31,7 @@ class Window(tk.Tk):
 
     def load_page(self, page_class):
         if self.current_frame is not None:
-            self.current_frame.destroy()  # remove old page
+            self.current_frame.destroy()
         self.current_frame = page_class(self)
         self.current_frame.pack(fill="both", expand=True)
 

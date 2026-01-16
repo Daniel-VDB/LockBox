@@ -36,35 +36,34 @@ class Home(tk.Frame):
 
 
 class Home_buttons(tk.Frame):
-        def __init__(self, master, parent):
-            super().__init__(master)
-            self.parent = parent
-            self.configure(bg = globals.bg_colour)
+    def __init__(self, master, parent):
+        super().__init__(master)
+        self.parent = parent
+        self.configure(bg = globals.bg_colour)
 
-            for i in range(3):
-                self.columnconfigure(i, weight = 1, uniform="buttons")
+        for i in range(3):
+            self.columnconfigure(i, weight = 1, uniform="buttons")
 
+        self.compression_button =  tk.Button(self, text="File compression", 
+                                            bg=globals.secondary_colour, 
+                                            fg = globals.text_div_colour,
+                                            font = ("Satoshi", 25, "bold"),
+                                            command=lambda: parent.load_page(file_input.input_screen))
+        self.compression_button.grid(row=0, column=0, sticky="ew", padx=40, pady=5)
 
-            self.compression_button =  tk.Button(self, text="File compression", 
-                                                 bg=globals.secondary_colour, 
-                                                 fg = globals.text_div_colour,
-                                                 font = ("Satoshi", 25, "bold"),
-                                                 command=lambda: parent.load_page(file_input.input_screen))
-            self.compression_button.grid(row=0, column=0, sticky="ew", padx=40, pady=5)
-
-            self.passwords_button =  tk.Button(self, text="Passwords", 
-                                               bg=globals.secondary_colour, 
-                                               fg = globals.text_div_colour,
-                                               font = ("Satoshi", 25, "bold"),
-                                               command=lambda: parent.load_page(passwords.passwords_screen))
-            self.passwords_button.grid(row=0, column=1, sticky="ew", padx=40, pady=5)
+        self.passwords_button =  tk.Button(self, text="Passwords", 
+                                            bg=globals.secondary_colour, 
+                                            fg = globals.text_div_colour,
+                                            font = ("Satoshi", 25, "bold"),
+                                            command=lambda: parent.load_page(passwords.passwords_screen))
+        self.passwords_button.grid(row=0, column=1, sticky="ew", padx=40, pady=5)
             
-            self.settings_button =  tk.Button(self, text="Settings", 
-                                               bg=globals.secondary_colour, 
-                                               fg = globals.text_div_colour,
-                                               font = ("Satoshi", 25, "bold"),
-                                               command=lambda: parent.load_page(settings.settings_screen))
-            self.settings_button.grid(row=0, column=2, sticky="ew", padx=40, pady=5)
+        self.settings_button =  tk.Button(self, text="Settings", 
+                                            bg=globals.secondary_colour, 
+                                            fg = globals.text_div_colour,
+                                            font = ("Satoshi", 25, "bold"),
+                                            command=lambda: parent.load_page(settings.settings_screen))
+        self.settings_button.grid(row=0, column=2, sticky="ew", padx=40, pady=5)
                  
 
 class RoundedLabel(tk.Canvas):

@@ -1,7 +1,11 @@
 from pathlib import Path
 
-path = Path("c:/files/file_name.c")
+p = Path("some/relative/path/file.txt")
 
-print(path.name)
-print(path.suffix)
-print(path.resolve())
+# Absolute path as a Path object
+abs_path = p.resolve()
+
+# Absolute path as a string
+abs_path_str = str(p.resolve())
+
+print(abs_path_str)

@@ -5,8 +5,8 @@
 int compare_files(FILE *fp1, FILE *fp2);
 
 int main(void){
-    char src_file_path[]="C:\\Users\\danie\\Documents\\Coding_projects\\LockBox\\media\\testing_files\\src.txt";
-    char dst_file_path[]="C:\\Users\\danie\\Documents\\Coding_projects\\LockBox\\media\\testing_files\\restored.txt";
+    char src_file_path[]="C:\\Users\\danie\\Downloads\\returned_files\\lorem ipsum.txt";
+    char dst_file_path[]="C:\\Users\\danie\\Downloads\\lorem ipsum.txt";
     FILE *src = fopen(src_file_path, "rb");
     FILE *dst = fopen(dst_file_path, "rb");
 

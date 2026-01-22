@@ -1,1 +1,1 @@
-zstd
+# No external Python dependencies

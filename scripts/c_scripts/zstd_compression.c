@@ -44,25 +44,25 @@ int deprocess_file(
     const char *dst_file_path,
     const char *password
 ) {
-    // Create a safe temporary file path
+    //create a safe temporary file path
     char temp_file[1024];
     snprintf(temp_file, sizeof(temp_file), "%s.tmp", dst_file_path);
 
-    // First, decrypt into the temp file
+    //first, decrypt into the temp file
     if (AES_decrypt_file(src_file_path, temp_file, password) != 0) {
         return 1; // decryption failed
     }
 
-    // Then decompress from the temp file to the final destination
+    //then decompress from the temp file to the final destination
     if (ZSTD_decompress_file(temp_file, dst_file_path) != 0) {
         remove(temp_file); // clean up temp file on error
         return 2; // decompression failed
     }
 
-    // Clean up temp file
+    //clean up temp file
     remove(temp_file);
 
-    return 0; // success
+    return 0; //success
 }
 
 int ZSTD_compress_file(const char *src_file_path, const char *dst_file_path){
@@ -134,8 +134,8 @@ int ZSTD_decompress_file(const char *src_file_path, const char *dst_file_path)
     if (!dstream) { fclose(src); fclose(dst); return 1; }
     ZSTD_initDStream(dstream);
 
-    size_t inChunkSize = 1024*1024; // 1 MB input
-    size_t outBufferSize = ZSTD_DStreamOutSize(); // recommended output size
+    size_t inChunkSize = 1024*1024; //1 MB input
+    size_t outBufferSize = ZSTD_DStreamOutSize(); //recommended output size
 
     //initialising buffers
     void* inBuffer = malloc(inChunkSize);

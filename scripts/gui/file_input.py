@@ -1,10 +1,16 @@
 import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
+import home
 from pathlib import Path
 import ctypes
 from ctypes import CDLL, c_char_p, c_int
 import globals
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from main import Window
 
 ctypes.windll.shcore.SetProcessDpiAwareness(1)  #makes tkinter look sharp on high DPI
 
@@ -25,12 +31,12 @@ def process(src_file, dst_file, password):
 
 #-------------------- Main Screen --------------------
 class input_screen(tk.Frame):
-    def __init__(self, master) -> None:
+    def __init__(self, master: "Window") -> None:
         super().__init__(master)
-        self.master = master
+        self.master: "Window" = master
         self.configure(bg=globals.bg_colour)
 
-        # page layout
+        #page layout
         self.grid(row=0, column=0, sticky="nsew")
         master.rowconfigure(0, weight=1)
         master.columnconfigure(0, weight=1)
@@ -41,31 +47,31 @@ class input_screen(tk.Frame):
         self.rowconfigure(3, weight=1)
         self.columnconfigure(0, weight=1)
 
-        # exit button
-        exit_button = tk.Button(
+        #exit button
+        home_button = tk.Button(
             self,
-            text="Exit",
-            command=self.master.destroy,
+            text="Home",
+            command=lambda: self.master.load_page(home.Home),
             bg=globals.secondary_colour,
             fg=globals.text_div_colour
         )
-        exit_button.grid(row=0, column=0, sticky="ne", padx=10, pady=10)
+        home_button.grid(row=0, column=0, sticky="ne", padx=10, pady=10)
 
-        # center container
+        #center container
         center_container = tk.Frame(self, bg=globals.bg_colour)
         center_container.grid(row=1, column=0)
         center_container.columnconfigure(0, weight=1)
         center_container.columnconfigure(1, weight=1)
 
-        # top box: file input
+        #top box: file input
         top_box = file_input_frame(center_container)
         top_box.grid(row=0, column=0, padx=20, pady=20)
 
-        # bottom box: statistics
+        #bottom box: statistics
         bottom_box = stats_frame(center_container)
         bottom_box.grid(row=2, column=0, padx=20, pady=20)
 
-        # middle box: encryption/decryption
+        #middle box: encryption/decryption
         middle_box = encryption_frame(center_container, top_box, bottom_box)
         middle_box.grid(row=1, column=0, padx=20, pady=20)
 
@@ -94,6 +100,18 @@ class file_input_frame(tk.Frame):
             borderwidth=1
         )
         self.import_button.grid(row=0, column=0, sticky="ns", pady=5)
+
+        #remove all selected files button
+        self.remove_all_button = tk.Button(
+            self,
+            text="Remove All Files",
+            command=self.clear_files,
+            bg=globals.secondary_colour,
+            fg=globals.text_div_colour,
+            relief="raised",
+            borderwidth=1
+        )
+        self.remove_all_button.grid(row=0, column=1, sticky="ns", pady=5, padx=5)
 
         #header labels
         tk.Label(self, text="File Name", bg=globals.secondary_colour, fg=globals.text_div_colour).grid(row=1, column=0, padx=10, pady=5, sticky="w")
@@ -140,24 +158,24 @@ class encryption_frame(tk.Frame):
     def __init__(self, master, file_frame: file_input_frame, stats_box: stats_frame) -> None:
         super().__init__(master, bg=globals.secondary_colour)
         self.file_frame = file_frame
-        self.stats_box = stats_box  # <- store stats box reference
+        self.stats_box = stats_box
 
         self.configure(width=800, height=200, highlightbackground=globals.primary_colour, highlightthickness=1)
         self.grid_propagate(False)
 
-        # layout columns
+        #layout columns
         self.columnconfigure(0, weight=1)
         self.columnconfigure(1, weight=2)
         self.columnconfigure(2, weight=1)
 
-        # password entry
+        #password entry
         self.password_label = tk.Label(self, text="Encryption Password", bg=globals.secondary_colour, fg=globals.text_div_colour)
         self.password_label.grid(row=0, column=0, padx=20, pady=10, sticky="e")
 
         self.password_entry = tk.Entry(self, width=30)
         self.password_entry.grid(row=0, column=1, padx=10, pady=10, sticky="w")
 
-        # encode/decode mode toggle
+        #encode/decode mode toggle
         self.encode_mode = tk.BooleanVar(value=True)
         self.mode_checkbox = tk.Checkbutton(
             self,
@@ -170,7 +188,7 @@ class encryption_frame(tk.Frame):
         )
         self.mode_checkbox.grid(row=1, column=1, sticky="w", padx=10)
 
-        # action button
+        #action button
         self.action_button = tk.Button(
             self,
             text="Compress & Encrypt file",
@@ -191,17 +209,17 @@ class encryption_frame(tk.Frame):
         is_encode = self.encode_mode.get()
         file_paths = list(self.file_frame.files.values())
 
-        # check for password
+        #check for password
         if not password:
             ctypes.windll.user32.MessageBoxW(0, "Password required", "Input error", 0x10)
             return
 
-        # check for files
+        #check for files
         if not file_paths:
             ctypes.windll.user32.MessageBoxW(0, "No files selected", "Input error", 0x10)
             return
 
-        # file extension check
+        #file extension check
         if not is_encode:
             invalid = [p for p in file_paths if p.suffix.lower() != ".zst"]
             if invalid:
@@ -209,25 +227,25 @@ class encryption_frame(tk.Frame):
                 ctypes.windll.user32.MessageBoxW(0, msg, "Invalid file type", 0x10)
                 return
 
-        # choose destination
+        #choose destination
         destination = filedialog.askdirectory(title="Select output destination")
         if not destination:
             return
 
-        # call encode/decode and pass stats_box
+        #call encode/decode and pass stats_box
         try:
             encode(
                 password=password,
                 is_encode=is_encode,
                 file_paths=file_paths,
                 destination=Path(destination),
-                stats_box=self.stats_box  # <- pass stats frame here
+                stats_box=self.stats_box  #pass stats frame
             )
         except ValueError as e:
             ctypes.windll.user32.MessageBoxW(0, str(e), "Input error", 0x10)
             return
 
-        # clear top box after processing
+        #clear top box after processing
         self.file_frame.clear_files()
 
 # -------------------- Encode/Decode Function --------------------
@@ -239,9 +257,8 @@ def encode(password: str, is_encode: bool, file_paths: list, destination: Path, 
     for path in file_paths:
         try:
             if is_encode:
-                # Keep original extension and add .zst
-                # Handles filenames with multiple dots correctly
-                original_name = path.name  # e.g., 'lorem.ipsum.txt'
+                #keep original extension and add .zst
+                original_name = path.name 
                 destination_name = destination / f"{original_name}.zst"
 
                 result = process(str(path.resolve()), str(destination_name.resolve()), password)
@@ -252,9 +269,9 @@ def encode(password: str, is_encode: bool, file_paths: list, destination: Path, 
                     final_total_size += Path(destination_name).stat().st_size
 
             else:
-                # Remove only the last .zst, keep everything else
+                #remove only the last .zst, keep everything else
                 if path.suffix.lower() == ".zst":
-                    original_name = path.name[:-4]  # removes last 4 chars ".zst"
+                    original_name = path.name[:-4]  #removes last 4 chars ".zst"
                     destination_name = destination / original_name
                 else:
                     destination_name = destination / path.name
@@ -270,7 +287,7 @@ def encode(password: str, is_encode: bool, file_paths: list, destination: Path, 
             print(f"Error processing {path}: {e}")
             success = False
 
-    # Update statistics frame
+    #update statistics frame
     if stats_box:
         stats_box.update_stats(
             initial_size=initial_total_size,

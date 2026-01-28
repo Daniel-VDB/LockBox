@@ -77,7 +77,7 @@ like to use to decrypt files later on. It is best
 practice to store this password in the passwords screen
 or otherwise)
 
-5. Press "encode" or "decode", and select the desired location
+5. Press "Compress and encrypt" or "Restore", and select the desired location
 to store the results
 
 

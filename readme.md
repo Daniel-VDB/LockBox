@@ -13,7 +13,7 @@ encryption algorithms in order to create file archives
 which are secure and safe for cloud storage, minimising
 risk and decreasing storage costs.
 
-Lockbox's can encrypt and decrypt any file type,
+Lockbox can encrypt and decrypt any file type,
 however compression efficiency varies depending on file structure
 
 File types ranked by compression efficiency:
